@@ -1,282 +1,298 @@
+let expression = "";
 let justCalculated = false;
 
 const display = document.getElementById("display");
 
-let firstNumber = "";
-let secondNumber = "";
-let operator = "";
-let isSecond = false;
-
 function appendNumber(num) {
+  if (justCalculated) {
+    expression = num;
+    justCalculated = false;
+  } else {
+    expression += num;
 
-    //for = to
-
-    if (justCalculated && !isSecond) {
-        firstNumber = num;
-        display.value = firstNumber;
-        justCalculated = false;
-        return;
-    }
-    // normal append
-    if (!isSecond) {
-        firstNumber += num;
-        display.value = firstNumber;
-    } else {
-        secondNumber += num;
-
-        display.value = firstNumber + " " + operator + " " + secondNumber;
-    }
-
+    display.value = expression;
+  }
 }
 
 function setOperator(op) {
-    if (firstNumber === "") return;
-    operator = op;
-    isSecond = true
+  if (expression === "") return;
 
-    display.value = firstNumber + " " + operator;
+  if (justCalculated) {
+    justCalculated = false;
+  }
 
+  //stope 5++ or 2--
+  const lastChar = expression.slice(-1);
+  if ("+-*/^".includes(lastChar)) return;
+
+  expression += op;
+  display.value = expression;
 }
 
-
 function addDecimal(value) {
-    if (value.includes(".")) return value;
-    return value === "" ? "0." : value + ".";
+  if (value.includes(".")) return value;
+  return value === "" ? "0." : value + ".";
 }
 
 function appendDecimal() {
-    if (isSecond) {
-        secondNumber = addDecimal(secondNumber);
-        display.value = `${firstNumber} ${operator} ${secondNumber}`;
-    } else {
-        firstNumber = addDecimal(firstNumber);
-        display.value = firstNumber;
-    }
+  const parts = expression.split(/[\+\-\*\/\^]/);
+  const lastPart = parts[parts.length - 1];
+
+  if (lastPart.includes(".")) return;
+
+  expression += lastPart === "" ? "0." : ".";
+
+  display.value = expression;
+}
+//brackets
+function openBracket() {
+  if (expression === "" || /[\+\-\*\/\^\(]$/.test(expression)) {
+    expression += "(";
+    display.value = expression;
+  }
+}
+function closeBracket() {
+  const open = (expression.match(/\(/g) || []).length;
+  const close = (expression.match(/\)/g) || []).length;
+
+  if (open > close) {
+    expression += ")";
+    display.value = expression;
+  }
 }
 
 function AllClear() {
+  expression = "";
+  display.value = "0";
+}
+
+function Eraser() {
+  expression = expression.slice(0, -1);
+  display.value = expression || "0";
+}
+
+function calculate() {
+  try {
+    const cap = expression.replace(/\^/g, "**");
+    const result = Function(`"use strict"; return (${cap})`)();
+    display.value = +result.toFixed(10);
+    expression = display.value;
+    justCalculated = true;
+  } catch {
+    display.value = "Error";
+    expression = "";
+  }
+}
+
+//squareRoot
+function squareRoot() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  if (value < 0) {
+    display.value = "Error";
+    expression = "";
+    return;
+  }
+
+  const result = Math.sqrt(value);
+
+  display.value = +result.toFixed(10);
+  expression = display.value;
+  justCalculated = true;
+}
+
+function power() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  if (value < 0) {
+    display.value = "Error";
+    expression = "";
+    return;
+  }
+
+  const result = Math.pow(value, 2);
+
+  display.value = +result.toFixed(10);
+  expression = display.value;
+  justCalculated = true;
+}
+
+function Percentage() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  if (value < 0) {
+    display.value = "Error";
+    expression = "";
+    return;
+  }
+
+  const result = value / 100;
+
+  display.value = +result.toFixed(10);
+  expression = display.value;
+  justCalculated = true;
+}
+
+//sin
+function sin() {
+  expression += "Math.sin(";
+  display.value = expression;
+}
+
+//cos
+function cos() {
+  expression += "Math.cos(";
+  display.value = expression;
+}
+//tan
+function tan() {
+  expression += "Math.tan(";
+  display.value = expression;
+}
+
+//x rais to ^ y
+function setPower() {
+  if (expression === "") return;
+
+  if (justCalculated) {
+    justCalculated = false;
+  }
+  expression += "^";
+  display.value = expression;
+}
+
+function log() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  if (value < 0) {
+    display.value = "Error";
+    expression = "";
+    return;
+  }
+
+  const result = Math.log10(value);
+
+  display.value = +result.toFixed(10);
+  expression = display.value;
+  justCalculated = true;
+}
+
+function factorialCalc(n) {
+  if (n < 0 || !Number.isInteger(n)) {
+    return null;
+  }
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
+
+function factorial() {
+  if (expression === "") return;
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  const fact = factorialCalc(value);
+  if (fact === null) {
+    display.value = "Error";
+    expression = "";
+    return;
+  }
+
+  display.value = fact;
+  expression = fact.toString();
+  justCalculated = true;
+}
+
+//toggle function
+
+function toggleScientific() {
+  const panel = document.getElementById("scientificPanel");
+  panel.classList.toggle("hidden");
+}
+
+//memory
+let memoryStack = [];
+let memoryValue = 0;
+
+function memoryStore() {
+  const value = Number(display.value);
+
+  if (!isNaN(value)) {
+    memoryStack.unshift(value);
+    memoryValue = value;
+    renderMemory();
+    display.value = "0";
     firstNumber = "";
     secondNumber = "";
     operator = "";
     isSecond = false;
-    display.value = "0";
-
+    justCalculated = true;
+  }
 }
 
-function Eraser() {
-    //for first number
-    if (!isSecond) {
-        firstNumber = firstNumber.slice(0, -1);
-        display.value = firstNumber || "0";
-        return;
-
-    }
-    //remove operator only
-    if (isSecond && secondNumber === "") {
-        operator = "";
-        isSecond = false; //state goes to first num true part
-        display.value = firstNumber;
-        return;
-
-    }
-    //for second number
-    secondNumber = secondNumber.slice(0, -1);
-    display.value = secondNumber
-        ? firstNumber + " " + operator + " " + secondNumber : firstNumber + " " + operator; //tearnari op
-
+function memoryClear() {
+  memoryStack = [];
+  memoryValue = 0;
+  renderMemory();
 }
 
-function calculate() {
-    if (firstNumber === "" || secondNumber === "" || operator === "") return;
+function memoryRecall() {
+  if (memoryStack.length > 0) {
+    const value = memoryStack[0].toString();
 
-    let result;
-
-    const num1 = parseFloat(firstNumber);
-    const num2 = parseFloat(secondNumber);
-
-    switch (operator) {
-
-        case "+":
-            result = num1 + num2;
-            break;
-        case "-":
-            result = num1 - num2;
-            break;
-        case "*":
-            result = num1 * num2;
-            break;
-        case "/":
-            result = num2 === 0 ? "Error" : num1 / num2;
-            break;
-        case "^":
-            result = Math.pow(num1, num2);
-            break;
-
-    }
-    if (typeof result === "number") {
-        result = +result.toFixed(10);
-    }
-
-    display.value = result;
-
-    firstNumber = result.toString();
+    display.value = value;
+    firstNumber = value;
     secondNumber = "";
     operator = "";
     isSecond = false;
 
     justCalculated = true;
+  }
 }
 
-//squareRoot
-function squareRoot() {
-
-    if (isSecond && secondNumber !== "") {
-        alert("This work only in one digit number");
-        return;
-    }
-    //apply first num
-    if (firstNumber !== "") {
-        let value = parseFloat(firstNumber);
-
-        if (value < 0) {
-            display.value = "Error";
-            return 0;
-
-        }
-        let result = Math.sqrt(value);
-        firstNumber = result.toString();
-
-        display.value = firstNumber;
-        operator = "";
-        secondNumber = "";
-        isSecond = false;
-        justCalculated = true;
-
-    }
-
-
+function memoryAdd() {
+  memoryValue += Number(display.value);
+  memoryStack[0] = memoryValue;
+  renderMemory();
+  display.value = "0";
+  firstNumber = "";
+  secondNumber = "";
+  operator = "";
+  isSecond = false;
+  justCalculated = true;
 }
 
-function power() {
-    //for second num
-    if (isSecond && secondNumber !== "") {
-        alert("This work only in one digit number");
-        return;
-    }
-    //for first num
-    if (firstNumber !== "") {
-        let value = parseFloat(firstNumber);
-
-        if (value < 0) {
-            display.value = "Error";
-            return 0;
-
-        }
-        let result = Math.pow(value, 2);
-        firstNumber = result.toString();
-
-        display.value = firstNumber;
-        operator = "";
-        secondNumber = "";
-        isSecond = false;
-        justCalculated = true;
-
-    }
-
-
+function memorySubtract() {
+  memoryValue -= Number(display.value);
+  memoryStack[0] = memoryValue;
+  renderMemory();
+  display.value = "0";
+  firstNumber = "";
+  secondNumber = "";
+  operator = "";
+  isSecond = false;
+  justCalculated = true;
 }
 
-function Percentage() {
-    if (!isSecond) {
-        let value = parseFloat(firstNumber);
-        let result = value / 100;
+function renderMemory() {
+  const memoryList = document.getElementById("memoryList");
+  memoryList.innerHTML = "";
 
-        firstNumber = result.toString();
-        display.value = firstNumber;
-
-        justCalculated = true;
-    }
-
+  memoryStack.slice(0, 3).forEach((val) => {
+    const div = document.createElement("div");
+    div.textContent = val;
+    memoryList.appendChild(div);
+  });
 }
-
-//Trigonometric 
-function toRadians(deg) {
-    return deg * (Math.PI / 180);
-}
-
-//sin
-function sin() {
-    if (firstNumber !== "") {
-        let value = parseFloat(firstNumber);
-        let result = Math.sin(toRadians(value));
-
-        firstNumber = result.toString();
-        display.value = firstNumber;
-
-        operator = "";
-        secondNumber = "";
-        isSecond = false;
-        justCalculated = true;
-
-
-
-    }
-
-}
-
-//cos
-function cos() {
-    if (firstNumber !== "") {
-        let value = parseFloat(firstNumber);
-        let result = Math.sin(toRadians(value));
-
-        firstNumber = result.toString();
-        display.value = firstNumber;
-
-        operator = "";
-        secondNumber = "";
-        isSecond = false;
-        justCalculated = true;
-
-
-
-    }
-
-}
-//tan
-function tan() {
-    if (firstNumber !== "") {
-        let value = parseFloat(firstNumber);
-        let result = Math.sin(toRadians(value));
-
-        firstNumber = result.toString();
-        display.value = firstNumber;
-
-        operator = "";
-        secondNumber = "";
-        isSecond = false;
-        justCalculated = true;
-
-
-
-    }
-
-}
-
-//x rais to ^ y
-function setPower() {
-    if (firstNumber === "") return;
-    operator = "^";
-    isSecond = true;
-    display.value = firstNumber + " ^ ";
-}
-
-
-
-
-
-
-
-
-
-

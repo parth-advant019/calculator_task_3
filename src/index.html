@@ -1,68 +1,154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculator</title>
-    <link href="./output.css" rel="stylesheet">
-    
-</head>
+    <link href="./output.css" rel="stylesheet" />
+  </head>
 
-    <body class="bg-gray-900 flex items-center justify-center min-h-screen">
-        <div class="bg-gray-700 p-8 rounded-lg shadow-2xl max-w-sm w-full">
-            <h2 class="text-center text-3xl text-white mb-6 font-bold">Calculator</h2>
+  <body class="bg-gray-900 flex items-center justify-center min-h-screen">
+    <div class="bg-gray-700 p-8 rounded-lg shadow-2xl max-w-sm w-full">
+      <h2 class="text-center text-3xl text-white mb-6 font-bold">Calculator</h2>
+      <!--memory part-->
+      <div
+        id="memoryPanel"
+        class="mb-4 p-2 bg-slate-800 rounded-lg text-white text-right text-sm min-h-[48px]"
+      >
+        <div class="text-gray-400 text-xs">Memory</div>
+        <div id="memoryList" class="mt-1 space-y-1"></div>
+      </div>
 
-            <input
-              id="display"
-              type="text"
-              readonly
-              class="w-full mb-4 p-3 text-right text-2xl rounded-lg bg-slate-900 text-white outline-none"
-              value="0"
-            />
+      <!--memory part-->
 
-            <!---->
-            <div class="grid grid-cols-4 gap-3">
-              <button onclick="AllClear()" class="bg-yellow-500 col-span-2">AC</button>
-              <button onclick="Eraser()" class="bg-yellow-500 col-span-2">Clear</button>
+      <input
+        id="display"
+        type="text"
+        readonly
+        class="w-full mb-4 p-3 text-right text-2xl rounded-lg bg-slate-900 text-white outline-none"
+        value="0"
+      />
 
-              <button onclick="squareRoot()" class="bg-slate-500 text-white">√</button>
-              <button onclick="power()" class="bg-slate-500 text-white">x²</button>
-              <button onclick="setPower()" class="bg-slate-500 text-white">xʸ</button>
+      <!---->
+      <div class="grid grid-cols-5 gap-2 mb-4">
+        <button onclick="memoryClear()" class="bg-slate-500 text-white">
+          MC
+        </button>
+        <button onclick="memoryRecall()" class="bg-slate-500 text-white">
+          MR
+        </button>
+        <button onclick="memoryAdd()" class="bg-slate-500 text-white">
+          M+
+        </button>
+        <button onclick="memorySubtract()" class="bg-slate-500 text-white">
+          M-
+        </button>
+        <button onclick="memoryStore()" class="bg-slate-500 text-white">
+          Ms
+        </button>
+      </div>
 
-              <button onclick="Percentage()" class="bg-slate-500 text-white">%</button>
-              
+      <div class="grid grid-cols-4 gap-3">
+        <button onclick="AllClear()" class="bg-yellow-500 col-span-2">
+          AC
+        </button>
+        <button onclick="Eraser()" class="bg-yellow-500 col-span-2">
+          Clear
+        </button>
 
-              <button onclick="sin()" class="bg-slate-500 text-white">sin</button>
-              <button onclick="cos()" class="bg-slate-500 text-white">cos</button>
-              <button onclick="tan()" class="bg-slate-500 text-white">tan</button>
+        <button onclick="squareRoot()" class="bg-slate-500 text-white">
+          √
+        </button>
+        <button onclick="power()" class="bg-slate-500 text-white">x²</button>
+        <button onclick="setPower()" class="bg-slate-500 text-white">xʸ</button>
 
+        <button onclick="Percentage()" class="bg-slate-500 text-white">
+          %
+        </button>
 
-              <button onclick="setOperator('/')" class="bg-slate-500 text-white">÷</button>
+        <button onclick="setOperator('/')" class="bg-slate-500 text-white">
+          ÷
+        </button>
 
-              <button onclick="appendNumber('7')" class="bg-slate-500 text-white">7</button>
-              <button onclick="appendNumber('8')" class="bg-slate-500 text-white">8</button>
-              <button onclick="appendNumber('9')" class="bg-slate-500 text-white">9</button>
-              <button onclick="setOperator('*')" class="bg-slate-500 text-white">x</button>
+        <button onclick="appendNumber('7')" class="bg-slate-500 text-white">
+          7
+        </button>
+        <button onclick="appendNumber('8')" class="bg-slate-500 text-white">
+          8
+        </button>
+        <button onclick="appendNumber('9')" class="bg-slate-500 text-white">
+          9
+        </button>
+        <button onclick="setOperator('*')" class="bg-slate-500 text-white">
+          x
+        </button>
 
-              <button onclick="appendNumber('4')" class="bg-slate-500 text-white">4</button>
-              <button onclick="appendNumber('5')" class="bg-slate-500 text-white">5</button>
-              <button onclick="appendNumber('6')" class="bg-slate-500 text-white">6</button>
-              <button onclick="setOperator('-')" class="bg-slate-500 text-white">-</button>
+        <button onclick="appendNumber('4')" class="bg-slate-500 text-white">
+          4
+        </button>
+        <button onclick="appendNumber('5')" class="bg-slate-500 text-white">
+          5
+        </button>
+        <button onclick="appendNumber('6')" class="bg-slate-500 text-white">
+          6
+        </button>
+        <button onclick="setOperator('-')" class="bg-slate-500 text-white">
+          -
+        </button>
 
-              <button onclick="appendNumber('1')" class="bg-slate-500 text-white">1</button>
-              <button onclick="appendNumber('2')" class="bg-slate-500 text-white">2</button>
-              <button onclick="appendNumber('3')" class="bg-slate-500 text-white">3</button>
-              <button onclick="setOperator('+')" class="bg-slate-500 text-white">+</button>
+        <button onclick="appendNumber('1')" class="bg-slate-500 text-white">
+          1
+        </button>
+        <button onclick="appendNumber('2')" class="bg-slate-500 text-white">
+          2
+        </button>
+        <button onclick="appendNumber('3')" class="bg-slate-500 text-white">
+          3
+        </button>
+        <button onclick="setOperator('+')" class="bg-slate-500 text-white">
+          +
+        </button>
 
-              <button onclick="appendNumber('0')" class="bg-slate-500 text-white">0</button>
-              <button onclick="appendDecimal()" class="bg-slate-500 text-white">.</button>
+        <button onclick="calculate()" class="bg-slate-500 text-white">=</button>
+        <button onclick="appendDecimal()" class="bg-slate-500 text-white">
+          .
+        </button>
+        <button onclick="appendNumber('0')" class="bg-slate-500 text-white">
+          0
+        </button>
+      </div>
+      <!--normal grid div end hear-->
 
-              <button onclick="calculate()" class="bg-slate-500 text-white col-span-2">=</button>
-            </div>            
-        </div>
+      <!--sci buttons-->
+      <div id="scientificPanel" class="mt-3 grid grid-cols-4 gap-3 mb-3 hidden">
+        <button onclick="sin()" class="bg-slate-500 text-white">sin</button>
+        <button onclick="cos()" class="bg-slate-500 text-white">cos</button>
+        <button onclick="tan()" class="bg-slate-500 text-white">tan</button>
+        <button onclick="log()" class="bg-slate-500 text-white">log</button>
+        <button onclick="factorial()" class="bg-slate-500 text-white">
+          n!
+        </button>
+      </div>
+      <!--sci buttons-->
 
-        <script src="./script.js"></script>
+      <div class="mt-3 grid grid-cols-4 gap-3 mb-3">
+        <button onclick="openBracket()" class="bg-slate-500 text-white">
+          (
+        </button>
 
-    </body>
+        <button onclick="closeBracket()" class="bg-slate-500 text-white">
+          )
+        </button>
+      </div>
 
+      <button
+        onclick="toggleScientific()"
+        class="w-full mt-3 mb-3 bg-indigo-600 text-white py-2 rounded-lg"
+      >
+        Scientific
+      </button>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
 </html>
