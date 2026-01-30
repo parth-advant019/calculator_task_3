@@ -18,7 +18,6 @@
         <div class="text-gray-400 text-xs">Memory</div>
         <div id="memoryList" class="mt-1 space-y-1"></div>
       </div>
-
       <!--memory part-->
 
       <input
@@ -28,8 +27,6 @@
         class="w-full mb-4 p-3 text-right text-2xl rounded-lg bg-slate-900 text-white outline-none"
         value="0"
       />
-
-      <!---->
       <div class="grid grid-cols-5 gap-2 mb-4">
         <button onclick="memoryClear()" class="bg-slate-500 text-white">
           MC
@@ -118,15 +115,23 @@
         </button>
       </div>
       <!--normal grid div end hear-->
-
       <!--sci buttons-->
       <div id="scientificPanel" class="mt-3 grid grid-cols-4 gap-3 mb-3 hidden">
         <button onclick="sin()" class="bg-slate-500 text-white">sin</button>
         <button onclick="cos()" class="bg-slate-500 text-white">cos</button>
         <button onclick="tan()" class="bg-slate-500 text-white">tan</button>
+        <button onclick="sec()" class="bg-slate-500 text-white">sec</button>
         <button onclick="log()" class="bg-slate-500 text-white">log</button>
         <button onclick="factorial()" class="bg-slate-500 text-white">
           n!
+        </button>
+        <button onclick="Sign()" class="bg-slate-500 text-white">+/-</button>
+        <button onclick="abs()" class="bg-slate-500 text-white">|x|</button>
+        <button onclick="half()" class="bg-slate-500 text-white">1/x</button>
+        <button onclick="In()" class="bg-slate-500 text-white">In</button>
+        <button onclick="mod()" class="bg-slate-500 text-white">Mod</button>
+        <button onclick="tenRais()" class="bg-slate-500 text-white">
+          10<sup>x</sup>
         </button>
       </div>
       <!--sci buttons-->

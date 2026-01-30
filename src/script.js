@@ -73,8 +73,9 @@ function Eraser() {
 
 function calculate() {
   try {
+    const mod = expression.replace(/\mod/g, "%");
     const cap = expression.replace(/\^/g, "**");
-    const result = Function(`"use strict"; return (${cap})`)();
+    const result = Function(`"use strict"; return (${(cap, mod)})`)();
     display.value = +result.toFixed(10);
     expression = display.value;
     justCalculated = true;
@@ -139,21 +140,73 @@ function Percentage() {
   justCalculated = true;
 }
 
+function toRadians(deg) {
+  return deg * (Math.PI / 180);
+}
+
 //sin
 function sin() {
-  expression += "Math.sin(";
-  display.value = expression;
+  if (expression === "") return;
+
+  try {
+    const value = Function(`"use strict"; return (${expression})`)();
+    const result = Math.sin(toRadians(value));
+
+    display.value = +result.toFixed(10);
+    expression = display.value;
+    justCalculated = true;
+  } catch {
+    display.value = "Error";
+    expression = "";
+  }
 }
 
 //cos
 function cos() {
-  expression += "Math.cos(";
-  display.value = expression;
+  if (expression === "") return;
+
+  try {
+    const value = Function(`"use strict"; return (${expression})`)();
+    const result = Math.cos(toRadians(value));
+
+    display.value = +result.toFixed(10);
+    expression = display.value;
+    justCalculated = true;
+  } catch {
+    display.value = "Error";
+    expression = "";
+  }
 }
 //tan
 function tan() {
-  expression += "Math.tan(";
-  display.value = expression;
+  if (expression === "") return;
+
+  try {
+    const value = Function(`"use strict"; return (${expression})`)();
+    const result = Math.tan(toRadians(value));
+
+    display.value = +result.toFixed(10);
+    expression = display.value;
+    justCalculated = true;
+  } catch {
+    display.value = "Error";
+    expression = "";
+  }
+}
+function sec() {
+  if (expression === "") return;
+
+  try {
+    const value = Function(`"use strict"; return (${expression})`)();
+    const result = Math.sec(toRadians(value));
+
+    display.value = +result.toFixed(10);
+    expression = display.value;
+    justCalculated = true;
+  } catch {
+    display.value = "Error";
+    expression = "";
+  }
 }
 
 //x rais to ^ y
@@ -212,6 +265,110 @@ function factorial() {
 
   display.value = fact;
   expression = fact.toString();
+  justCalculated = true;
+}
+
+function Sign() {
+  if (expression === "") return;
+
+  const lastChar = expression.slice(-1);
+
+  //start typing normal negative number
+  if (lastChar === "(" || "+-*/^".includes(lastChar)) {
+    expression += "-";
+    display.value = expression;
+    return;
+  }
+
+  //inside bracket negative number
+  const openBrackets = (expression.match(/\(/g) || []).length;
+  const closeBrackets = (expression.match(/\)/g) || []).length;
+
+  if (openBrackets > closeBrackets) {
+    // find last number
+    const match = expression.match(/(\d+\.?\d*)$/);
+    if (!match) return;
+
+    const num = match[1];
+    const start = expression.lastIndexOf(num);
+
+    expression = expression.slice(0, start) + "(-" + num;
+
+    display.value = expression;
+    return;
+  }
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  const toggled = -value;
+
+  display.value = toggled;
+  expression = toggled.toString();
+  justCalculated = true;
+}
+
+function abs() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+  const result = Math.abs(value);
+
+  display.value = result;
+  expression = result.toString();
+  justCalculated = true;
+}
+
+function half() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  const result = 1 / value;
+
+  display.value = +result.toFixed(10);
+  expression = display.value;
+  justCalculated = true;
+}
+function In() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  if (value < 0) {
+    display.value = "Error";
+    expression = "";
+    return;
+  }
+
+  const result = Math.log(value);
+
+  display.value = +result.toFixed(10);
+  expression = display.value;
+  justCalculated = true;
+}
+
+function mod() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  if (justCalculated) {
+    justCalculated = false;
+  }
+
+  expression += "mod";
+  display.value = expression;
+}
+
+function tenRais() {
+  if (expression === "") return;
+
+  const value = Function(`"use strict"; return (${expression})`)();
+
+  const result = Math.pow(10, value);
+
+  display.value = +result.toFixed(10);
+  expression = display.value;
   justCalculated = true;
 }
 
